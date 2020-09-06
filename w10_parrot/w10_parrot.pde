@@ -11,7 +11,7 @@ void draw() {
   background(255);  //set back ground  as white
   fill(0); //fill with black
   parrot.drawParrot(); //draw ballObject
-  arrow.drawArrow(parrot.getXposition(), parrot.getYposition());  //draw new line from getter method 
+  arrow.drawArrow(parrot.getXposition(), parrot.getYposition());  //draw new line from getter method
 }
 
 public class Parrot {
@@ -54,17 +54,23 @@ public class Parrot {
 
 
 public class Arrow {
-  float centerY, centerX;  //set centerX,Y and size as attribute
-  float size;
+  float centerY, centerX;  //set centerX,Y and radius as attribute
+  float radius;
 
   Arrow() {  //default constructor
     centerY = height-50;  //set center as edge of canvas
     centerX = width-50;
-    size = centerX/6;
+    radius = centerX/6;  //set radius as center/6
   }
 
   public void drawArrow(float x, float y) {
     strokeWeight(10);
-    line(centerX, centerY, x, y);  //draw line to x,y position from center
+    float zeta = atan((centerY-y)/(centerX-x));  //get angle from Parrot  that return -pi/2 -> pi/2
+    if (y>centerY && x>centerX) {      //add -pi/2 -> -pi
+      zeta+=PI;
+    } else if (y<centerY && x>centerX) {  //add pi/2 -> pi
+      zeta+=-PI;
+    }
+    line(centerX, centerY, centerX-cos(zeta)*raius, centerY-sin(zeta)*radius);  //draw free line to point parrot
   }
 }
