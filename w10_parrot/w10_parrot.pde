@@ -1,17 +1,20 @@
 
 Arrow arrow; //set arrow As Arrow Object
 Parrot parrot;  //set parrot As Parrot Object
+PImage photo; //set photo As Pimage Object
 void setup() {
   size(1000, 1000);
   parrot = new Parrot(); //instance new object
   arrow = new Arrow();
+  photo = loadImage("parrot4.jpeg");
+  imageMode(CENTER);
 }
 
 void draw() {
-  background(255);  //set back ground  as white
+  background(247);  //set back ground  as white
   fill(0); //fill with black
   parrot.drawParrot(); //draw ballObject
-  arrow.drawArrow(parrot.getXposition(), parrot.getYposition());  //draw new line from getter method
+  arrow.drawArrow(parrot.getXposition(), parrot.getYposition(), parrot.getSize());  //draw new line from getter method
 }
 
 public class Parrot {
@@ -19,15 +22,15 @@ public class Parrot {
   private float speed;
 
   Parrot() {  //default attribute
-    size=100;
+    size=275;
     positionX=width/2;  //half of canvas
     positionY=height/2;
     speed=0.05;
   }
 
   void drawParrot() {
-    ellipse(positionX, positionY, size, size);  //draw ball
-    this.move();  //move ball
+    image(photo, positionX, positionY, size, size);  //set picture
+    this.move();  //move picture
   }
 
   public float getXposition() { //getter positionX
@@ -36,6 +39,10 @@ public class Parrot {
 
   public float getYposition() { //getter positionY
     return positionY;
+  }
+  
+  public float getSize() { //getter size
+    return size;
   }
 
   private void move() {
@@ -63,14 +70,19 @@ public class Arrow {
     radius = centerX/6;  //set radius as center/6
   }
 
-  public void drawArrow(float x, float y) {
+  public void drawArrow(float x, float y, float z) {
     strokeWeight(10);
-    float zeta = atan((centerY-y)/(centerX-x));  //get angle from Parrot  that return -pi/2 -> pi/2
-    if (y>centerY && x>centerX) {      //add -pi/2 -> -pi
+    float zeta = atan2((centerY-y),(centerX-x));  //get angle from Parrot  that return -pi/2 -> pi/2
+    /*if (y>centerY && x>centerX) {      //add -pi/2 -> -pi
       zeta+=PI;
     } else if (y<centerY && x>centerX) {  //add pi/2 -> pi
       zeta+=-PI;
-    }
-    line(centerX, centerY, centerX-cos(zeta)*raius, centerY-sin(zeta)*radius);  //draw free line to point parrot
+    }*/
+    float arrowHeadX = centerX-cos(zeta)*radius, arrowHeadY = centerY-sin(zeta)*radius;
+    float arrowTailX1 = arrowHeadX-(cos(5*PI/6 + zeta)*(radius/2)), arrowTailY1 = arrowHeadY-(sin(5*PI/6 + zeta)*(radius/2));
+    float arrowTailX2 = arrowHeadX-(cos(-5*PI/6 + zeta)*(radius/2)), arrowTailY2 = arrowHeadY-(sin(-5*PI/6 + zeta)*(radius/2));
+    line(centerX, centerY, arrowHeadX, arrowHeadY);  //draw free line to point parrot
+    line(arrowHeadX, arrowHeadY, arrowTailX1, arrowTailY1);
+    line(arrowHeadX, arrowHeadY, arrowTailX2, arrowTailY2);
   }
 }
